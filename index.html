@@ -700,6 +700,82 @@
     }
 
     /* ============================================
+       DOWNLOAD COUNTER WIDGET
+    ============================================ */
+    #download-counter {
+      position: absolute;
+      top: 110px;
+      left: 20px;
+      width: 128px;
+      background: #a8a898;
+      border-top: 2px solid #d0d0c0;
+      border-left: 2px solid #d0d0c0;
+      border-right: 2px solid #505048;
+      border-bottom: 2px solid #505048;
+      box-shadow: inset -1px -1px 0 #707068, inset 1px 1px 0 #c8c8b8;
+      padding: 6px 8px 8px;
+      cursor: default;
+    }
+
+    .calc-brand {
+      font-family: "MS Sans Serif", Arial, sans-serif;
+      font-size: 8px;
+      font-weight: bold;
+      color: #303028;
+      letter-spacing: 1px;
+      text-align: center;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .calc-display {
+      background: #2a3a12;
+      border-top: 2px solid #181f08;
+      border-left: 2px solid #181f08;
+      border-right: 2px solid #4a5a28;
+      border-bottom: 2px solid #4a5a28;
+      padding: 5px 7px 4px;
+      text-align: right;
+      margin-bottom: 5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calc-display::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.06) 0px,
+        rgba(0,0,0,0.06) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      pointer-events: none;
+    }
+
+    #counter-value {
+      font-family: "Courier New", monospace;
+      font-size: 22px;
+      font-weight: bold;
+      color: #aaff22;
+      text-shadow: 0 0 8px #88dd00, 0 0 2px #aaff22;
+      letter-spacing: 3px;
+      display: block;
+      line-height: 1;
+    }
+
+    .calc-label {
+      font-family: "MS Sans Serif", Arial, sans-serif;
+      font-size: 8px;
+      color: #303028;
+      text-align: center;
+      letter-spacing: 0.5px;
+      line-height: 1.4;
+    }
+
+    /* ============================================
        BOOT OVERLAY — controlled by GSAP
     ============================================ */
     #boot-overlay {
@@ -728,6 +804,15 @@
     <div class="desktop-icon" id="icon-claude-skills" style="top: 20px; left: 20px;" tabindex="0">
       <div class="folder-icon icon-img"></div>
       <span class="icon-label">Claude Skills</span>
+    </div>
+
+    <!-- Download Counter Widget -->
+    <div id="download-counter">
+      <div class="calc-brand">DODD SYSTEMS</div>
+      <div class="calc-display">
+        <span id="counter-value">------</span>
+      </div>
+      <div class="calc-label">SKILL DOWNLOADS</div>
     </div>
 
   </div>
@@ -1077,6 +1162,32 @@
     }
 
     // ============================================
+    // DOWNLOAD COUNTER
+    // ============================================
+    const COUNTER_NS  = 'dodd95-skill';
+    const COUNTER_KEY = 'gsap-downloads';
+
+    function setCounterDisplay(n) {
+      const el = document.getElementById('counter-value');
+      if (n === null) { el.textContent = '------'; return; }
+      el.textContent = String(n).padStart(6, '0');
+    }
+
+    function fetchCounter() {
+      fetch(`https://api.countapi.xyz/get/${COUNTER_NS}/${COUNTER_KEY}`)
+        .then(r => r.json())
+        .then(d => setCounterDisplay(d.value ?? 0))
+        .catch(() => setCounterDisplay(null));
+    }
+
+    function incrementCounter() {
+      fetch(`https://api.countapi.xyz/hit/${COUNTER_NS}/${COUNTER_KEY}`)
+        .then(r => r.json())
+        .then(d => setCounterDisplay(d.value ?? 0))
+        .catch(() => {});
+    }
+
+    // ============================================
     // FILE DOWNLOAD
     // ============================================
     function downloadSkillFile() {
@@ -1086,6 +1197,7 @@
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+      incrementCounter();
     }
 
     // ============================================
@@ -1113,6 +1225,19 @@
     document.addEventListener('DOMContentLoaded', () => {
       // Make all windows draggable
       document.querySelectorAll('.window').forEach(makeDraggable);
+
+      // Make counter widget draggable
+      const counter = document.getElementById('download-counter');
+      counter.style.position = 'absolute';
+      makeDraggable({ querySelector: (s) => counter, id: 'counter', style: counter.style, offsetLeft: counter.offsetLeft, offsetTop: counter.offsetTop });
+      // Simpler: attach drag directly
+      let cDrag = false, cSX, cSY, cSL, cST;
+      counter.addEventListener('mousedown', e => { cDrag=true; cSX=e.clientX; cSY=e.clientY; cSL=parseInt(counter.style.left)||counter.offsetLeft; cST=parseInt(counter.style.top)||counter.offsetTop; });
+      counter.addEventListener('touchstart', e => { cDrag=true; cSX=e.touches[0].clientX; cSY=e.touches[0].clientY; cSL=parseInt(counter.style.left)||counter.offsetLeft; cST=parseInt(counter.style.top)||counter.offsetTop; }, {passive:true});
+      document.addEventListener('mousemove', e => { if(!cDrag) return; counter.style.left=Math.max(0,cSL+e.clientX-cSX)+'px'; counter.style.top=Math.max(0,cST+e.clientY-cSY)+'px'; });
+      document.addEventListener('touchmove', e => { if(!cDrag) return; counter.style.left=Math.max(0,cSL+e.touches[0].clientX-cSX)+'px'; counter.style.top=Math.max(0,cST+e.touches[0].clientY-cSY)+'px'; }, {passive:true});
+      document.addEventListener('mouseup',  () => cDrag=false);
+      document.addEventListener('touchend', () => cDrag=false);
 
       // Desktop icon → folder window
       setupIconDoubleClick(document.getElementById('icon-claude-skills'), 'folder-window');
@@ -1161,6 +1286,9 @@
       updateClock();
       setInterval(updateClock, 10000);
 
+      // Fetch live download count
+      fetchCounter();
+
       // ============================================
       // BOOT SEQUENCE — GSAP pixel dissolve
       // ============================================
@@ -1204,6 +1332,12 @@
         opacity: 0, scale: 0.4, y: -10,
         duration: 0.45, ease: 'back.out(2.2)'
       }, '+=0.05')
+
+      // 3b. Counter widget pops in
+      .from('#download-counter', {
+        opacity: 0, scale: 0.5, y: -8,
+        duration: 0.4, ease: 'back.out(2)'
+      }, '-=0.2')
 
       // 4. Terminal window appears last
       .add(() => {
