@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Windows 95</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "MS Sans Serif", "Arial", sans-serif;
+      font-size: 11px;
+      background: #008080 url('bg-image.jpg') center center / cover no-repeat;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      user-select: none;
+    }
+
+    /* ============================================
+       DESKTOP
+    ============================================ */
+    .desktop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 28px;
+    }
+
+    /* ============================================
+       DESKTOP ICONS
+    ============================================ */
+    .desktop-icon {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 76px;
+      padding: 4px;
+      cursor: default;
+    }
+
+    .desktop-icon .icon-img {
+      margin-bottom: 4px;
+    }
+
+    .desktop-icon .icon-label {
+      font-size: 11px;
+      color: #ffffff;
+      text-align: center;
+      text-shadow: 1px 1px 0 #000000;
+      padding: 1px 3px;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .desktop-icon.selected .icon-label,
+    .desktop-icon:focus .icon-label {
+      background: #000080;
+      outline: 1px dotted #ffffff;
+    }
+
+    /* Folder icon — pure CSS */
+    .folder-icon {
+      width: 32px;
+      height: 28px;
+      background: #f0c000;
+      border: 1px solid #808000;
+      border-radius: 0 2px 2px 2px;
+      position: relative;
+    }
+
+    .folder-icon::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 0;
+      width: 13px;
+      height: 6px;
+      background: #f0c000;
+      border: 1px solid #808000;
+      border-bottom: none;
+      border-radius: 3px 3px 0 0;
+    }
+
+    .folder-icon::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 4px;
+      right: 4px;
+      height: 1px;
+      background: #c0a000;
+    }
+
+    /* ============================================
+       WINDOWS
+    ============================================ */
+    .window {
+      position: absolute;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #404040;
+      border-bottom: 2px solid #404040;
+      box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+      min-width: 180px;
+      display: none;
+    }
+
+    .window.active .title-bar {
+      background: linear-gradient(to right, #000080, #1084d0);
+    }
+
+    .window.inactive .title-bar {
+      background: linear-gradient(to right, #7b7b7b, #b0b0b0);
+    }
+
+    .title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 3px 2px 4px;
+      cursor: default;
+    }
+
+    .title-bar-text {
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 11px;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      pointer-events: none;
+    }
+
+    .title-bar-icon {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* Small folder for title bar */
+    .title-bar-folder {
+      width: 14px;
+      height: 12px;
+      background: #f0c000;
+      border: 1px solid #808000;
+      position: relative;
+      border-radius: 0 1px 1px 1px;
+      flex-shrink: 0;
+    }
+
+    .title-bar-folder::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: 0;
+      width: 6px;
+      height: 3px;
+      background: #f0c000;
+      border: 1px solid #808000;
+      border-bottom: none;
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* Small terminal icon */
+    .title-bar-terminal {
+      width: 14px;
+      height: 12px;
+      background: #000000;
+      border: 1px solid #808080;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .title-bar-terminal::after {
+      content: '>';
+      position: absolute;
+      left: 2px;
+      top: -1px;
+      font-size: 8px;
+      color: #00ff00;
+      font-family: monospace;
+    }
+
+    .title-bar-controls {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .title-bar-controls button {
+      width: 16px;
+      height: 14px;
+      background: #c0c0c0;
+      border-top: 1px solid #ffffff;
+      border-left: 1px solid #ffffff;
+      border-right: 1px solid #404040;
+      border-bottom: 1px solid #404040;
+      box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+      font-size: 8px;
+      font-family: "MS Sans Serif", Arial, sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      line-height: 1;
+      color: #000000;
+    }
+
+    .title-bar-controls button:active {
+      border-top: 1px solid #404040;
+      border-left: 1px solid #404040;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #dfdfdf;
+    }
+
+    /* ============================================
+       MENU BAR
+    ============================================ */
+    .menu-bar {
+      background: #c0c0c0;
+      display: flex;
+      padding: 2px 4px 0;
+      border-bottom: 1px solid #808080;
+      font-size: 11px;
+    }
+
+    .menu-item {
+      padding: 2px 8px;
+      cursor: default;
+    }
+
+    .menu-item:hover {
+      background: #000080;
+      color: #ffffff;
+    }
+
+    /* ============================================
+       FOLDER WINDOW
+    ============================================ */
+    #folder-window {
+      width: 380px;
+      top: 60px;
+      left: 100px;
+    }
+
+    .folder-toolbar {
+      background: #c0c0c0;
+      padding: 3px 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border-bottom: 1px solid #808080;
+      font-size: 11px;
+    }
+
+    .folder-toolbar-btn {
+      background: #c0c0c0;
+      border-top: 1px solid #ffffff;
+      border-left: 1px solid #ffffff;
+      border-right: 1px solid #404040;
+      border-bottom: 1px solid #404040;
+      box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+      font-size: 10px;
+      padding: 1px 6px;
+      cursor: pointer;
+      font-family: "MS Sans Serif", Arial, sans-serif;
+    }
+
+    .folder-view {
+      background: #ffffff;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #dfdfdf;
+      border-bottom: 2px solid #dfdfdf;
+      margin: 4px;
+      min-height: 160px;
+      padding: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 4px;
+    }
+
+    .file-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 72px;
+      padding: 4px;
+      cursor: default;
+    }
+
+    .file-icon .file-label {
+      font-size: 11px;
+      color: #000000;
+      text-align: center;
+      padding: 1px 2px;
+      margin-top: 3px;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .file-icon:hover .file-label,
+    .file-icon.selected .file-label {
+      background: #000080;
+      color: #ffffff;
+      outline: 1px dotted #ffffff;
+    }
+
+    /* Skill/document CSS icon */
+    .skill-file-icon {
+      width: 30px;
+      height: 36px;
+      background: #ffffff;
+      border: 1px solid #808080;
+      position: relative;
+    }
+
+    .skill-file-icon::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      background: #c0c0c0;
+      border-left: 1px solid #808080;
+      border-bottom: 1px solid #808080;
+    }
+
+    .skill-file-icon::after {
+      content: 'SKL';
+      position: absolute;
+      bottom: 5px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 7px;
+      font-weight: bold;
+      color: #000080;
+      letter-spacing: 0;
+    }
+
+    .status-bar {
+      background: #c0c0c0;
+      padding: 2px 6px;
+      font-size: 11px;
+      border-top: 1px solid #808080;
+      display: flex;
+      gap: 8px;
+    }
+
+    .status-panel {
+      border-top: 1px solid #808080;
+      border-left: 1px solid #808080;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      padding: 1px 6px;
+    }
+
+    /* ============================================
+       TERMINAL WINDOW
+    ============================================ */
+    #terminal-window {
+      width: 540px;
+      height: 420px;
+      top: 120px;
+      left: 280px;
+      flex-direction: column;
+      resize: both;
+      overflow: auto;
+      min-width: 340px;
+      min-height: 200px;
+    }
+
+    .terminal-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #000000;
+      overflow: hidden;
+      margin: 4px;
+      border-top: 2px solid #404040;
+      border-left: 2px solid #404040;
+      border-right: 2px solid #dfdfdf;
+      border-bottom: 2px solid #dfdfdf;
+    }
+
+    .terminal-output {
+      flex: 1;
+      padding: 6px 8px;
+      overflow-y: auto;
+      font-family: "Lucida Console", "Courier New", monospace;
+      font-size: 12px;
+      color: #c0c0c0;
+      line-height: 1.5;
+      scrollbar-width: thin;
+      scrollbar-color: #808080 #000000;
+    }
+
+    .terminal-output p {
+      white-space: pre;
+    }
+
+    .terminal-divider {
+      height: 1px;
+      background: #333333;
+      flex-shrink: 0;
+    }
+
+    .terminal-editor {
+      padding: 6px 8px 4px;
+      flex-shrink: 0;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .terminal-editor-label {
+      font-family: "Lucida Console", "Courier New", monospace;
+      font-size: 10px;
+      color: #666666;
+      margin-bottom: 2px;
+    }
+
+    .terminal-editor textarea {
+      width: 100%;
+      background: #000000;
+      color: #e8e8e8;
+      font-family: "Lucida Console", "Courier New", monospace;
+      font-size: 12px;
+      border: none;
+      outline: none;
+      resize: none;
+      height: 110px;
+      line-height: 1.5;
+      caret-color: #ffffff;
+      display: block;
+    }
+
+    .terminal-editor textarea::placeholder {
+      color: #666666;
+    }
+
+    /* ============================================
+       TASKBAR
+    ============================================ */
+    .taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 28px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 2px;
+      gap: 2px;
+      z-index: 9000;
+    }
+
+    .start-button {
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #404040;
+      border-bottom: 2px solid #404040;
+      box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+      font-family: "MS Sans Serif", "Arial", sans-serif;
+      font-weight: bold;
+      font-size: 11px;
+      padding: 1px 6px 1px 4px;
+      cursor: pointer;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .start-button:active {
+      border-top: 2px solid #404040;
+      border-left: 2px solid #404040;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #dfdfdf;
+    }
+
+    /* Win95 logo in start button (4 colored squares) */
+    .win-logo {
+      display: grid;
+      grid-template-columns: 6px 6px;
+      grid-template-rows: 6px 6px;
+      gap: 1px;
+      flex-shrink: 0;
+    }
+
+    .win-logo span:nth-child(1) { background: #ff0000; }
+    .win-logo span:nth-child(2) { background: #00ff00; }
+    .win-logo span:nth-child(3) { background: #0000ff; }
+    .win-logo span:nth-child(4) { background: #ffff00; }
+
+    .taskbar-divider {
+      width: 2px;
+      height: 20px;
+      border-left: 1px solid #808080;
+      border-right: 1px solid #ffffff;
+      flex-shrink: 0;
+    }
+
+    .taskbar-buttons {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .taskbar-window-btn {
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #404040;
+      border-bottom: 2px solid #404040;
+      box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+      font-family: "MS Sans Serif", "Arial", sans-serif;
+      font-size: 11px;
+      padding: 1px 8px;
+      cursor: pointer;
+      height: 22px;
+      min-width: 100px;
+      max-width: 160px;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .taskbar-window-btn.active {
+      border-top: 2px solid #404040;
+      border-left: 2px solid #404040;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #dfdfdf;
+    }
+
+    .taskbar-tray {
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      padding: 1px 8px;
+      font-size: 11px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    /* ============================================
+       START MENU
+    ============================================ */
+    .start-menu {
+      position: fixed;
+      bottom: 28px;
+      left: 2px;
+      width: 190px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #404040;
+      border-bottom: 2px solid #404040;
+      box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+      display: none;
+      z-index: 9999;
+      flex-direction: row;
+    }
+
+    .start-menu-sidebar {
+      width: 22px;
+      background: #000080;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 6px;
+    }
+
+    .start-menu-sidebar span {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      color: #c0c0c0;
+      font-size: 9px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      line-height: 22px;
+    }
+
+    .start-menu-sidebar span em {
+      color: #ffffff;
+      font-style: normal;
+    }
+
+    .start-menu-items {
+      flex: 1;
+      padding: 4px 0;
+    }
+
+    .start-menu-item {
+      padding: 5px 16px 5px 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      cursor: default;
+    }
+
+    .start-menu-item:hover {
+      background: #000080;
+      color: #ffffff;
+    }
+
+    .start-menu-separator {
+      height: 1px;
+      background: #808080;
+      margin: 3px 4px;
+      box-shadow: 0 1px 0 #ffffff;
+    }
+
+    .start-menu-item-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .start-menu-link {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      padding: 5px 16px 5px 8px;
+      cursor: default;
+    }
+
+    .start-menu-link:hover {
+      background: #000080;
+      color: #ffffff;
+    }
+
+    /* ============================================
+       MOBILE / RESPONSIVE
+    ============================================ */
+    @media (max-width: 768px) {
+      #terminal-window {
+        width: calc(100vw - 12px) !important;
+        left: 6px !important;
+        top: 36px !important;
+        height: calc(100vh - 80px) !important;
+        resize: none;
+      }
+
+      #folder-window {
+        width: calc(100vw - 12px) !important;
+        left: 6px !important;
+        top: 36px !important;
+      }
+
+      .window {
+        min-width: unset;
+      }
+
+      .terminal-output {
+        font-size: 11px;
+      }
+
+      .start-menu {
+        width: 220px;
+      }
+
+      .taskbar-window-btn {
+        min-width: 70px;
+        font-size: 10px;
+        padding: 1px 4px;
+      }
+    }
+
+    /* ============================================
+       BOOT OVERLAY — controlled by GSAP
+    ============================================ */
+    #boot-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      pointer-events: none;
+      display: grid;
+    }
+
+    #boot-overlay .px {
+      background: #000000;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+
+  <!-- BOOT OVERLAY -->
+  <div id="boot-overlay"></div>
+
+  <!-- DESKTOP -->
+  <div class="desktop" id="desktop">
+
+    <!-- Desktop Icon: Claude Skills folder -->
+    <div class="desktop-icon" id="icon-claude-skills" style="top: 20px; left: 20px;" tabindex="0">
+      <div class="folder-icon icon-img"></div>
+      <span class="icon-label">Claude Skills</span>
+    </div>
+
+  </div>
+
+  <!-- WINDOW: Claude Skills Folder -->
+  <div class="window" id="folder-window">
+    <div class="title-bar" id="folder-window-titlebar">
+      <span class="title-bar-text">
+        <span class="title-bar-folder"></span>
+        Claude Skills
+      </span>
+      <div class="title-bar-controls">
+        <button onclick="minimizeWindow('folder-window')">_</button>
+        <button onclick="maximizeWindow('folder-window')">&#9744;</button>
+        <button onclick="closeWindow('folder-window')">&#x2715;</button>
+      </div>
+    </div>
+    <div class="menu-bar">
+      <span class="menu-item">File</span>
+      <span class="menu-item">Edit</span>
+      <span class="menu-item">View</span>
+      <span class="menu-item">Help</span>
+    </div>
+    <div class="folder-view" id="folder-view">
+      <div class="file-icon" id="skill-file">
+        <div class="skill-file-icon"></div>
+        <span class="file-label">webflow-gsap-skill</span>
+      </div>
+    </div>
+    <div class="status-bar">
+      <span class="status-panel">1 object(s)</span>
+    </div>
+  </div>
+
+  <!-- WINDOW: Terminal / Code Editor -->
+  <div class="window active" id="terminal-window">
+    <div class="title-bar" id="terminal-window-titlebar">
+      <span class="title-bar-text">
+        <span class="title-bar-terminal"></span>
+        C:\SKILLS\terminal.exe
+      </span>
+      <div class="title-bar-controls">
+        <button onclick="minimizeWindow('terminal-window')">_</button>
+        <button onclick="maximizeWindow('terminal-window')">&#9744;</button>
+        <button onclick="closeWindow('terminal-window')">&#x2715;</button>
+      </div>
+    </div>
+    <div class="terminal-body">
+      <div class="terminal-output" id="terminal-output">
+        <p>Harry Dodd 95</p>
+        <p>Copyright Harry Dodd 1995-2026. All rights reserved.</p>
+        <p>&nbsp;</p>
+        <p>C:\SKILLS&gt; Claude Skills Terminal</p>
+        <p>&nbsp;</p>
+        <p>C:\SKILLS&gt; ============================================================</p>
+        <p>C:\SKILLS&gt; <span style="color:#00ff00;font-weight:bold;">SUPERCHARGE YOUR CLAUDE SKILL — Webflow + GSAP DOM Inspector</span></p>
+        <p>C:\SKILLS&gt; ============================================================</p>
+        <p>&nbsp;</p>
+        <p>C:\SKILLS&gt; HOW TO USE:</p>
+        <p>C:\SKILLS&gt;   1. Copy the script below into an Embed element in Webflow.</p>
+        <p>C:\SKILLS&gt;   2. Deploy to your staging domain.</p>
+        <p>C:\SKILLS&gt;   3. Open the browser console (F12) — all HTML elements logged.</p>
+        <p>C:\SKILLS&gt;   4. Copy the output back into Claude.</p>
+        <p>C:\SKILLS&gt;      → Claude will have all your class names + full hierarchy.</p>
+        <p>&nbsp;</p>
+        <p>C:\SKILLS&gt; ── SCRIPT ──────────────────────────────────────────────────</p>
+        <p>&nbsp;</p>
+        <p>&lt;script&gt;</p>
+        <p>function getDOMStructure(element = document.body, level = 0) &#123;</p>
+        <p>    let structure = '';</p>
+        <p>    const indent = '  '.repeat(level);</p>
+        <p>    const classes = Array.from(element.classList).join('.');</p>
+        <p>    const id = element.id ? `#$&#123;element.id&#125;` : '';</p>
+        <p>    const tag = element.tagName.toLowerCase();</p>
+        <p>    structure += `$&#123;indent&#125;$&#123;tag&#125;$&#123;id&#125;$&#123;classes ? `.$&#123;classes&#125;` : ''&#125;\n`;</p>
+        <p>    Array.from(element.children).forEach(child =&gt; &#123;</p>
+        <p>        structure += getDOMStructure(child, level + 1);</p>
+        <p>    &#125;);</p>
+        <p>    return structure;</p>
+        <p>&#125;</p>
+        <p>&nbsp;</p>
+        <p>document.addEventListener('DOMContentLoaded', () =&gt; &#123;</p>
+        <p>    const structure = getDOMStructure();</p>
+        <p>    console.log('DOM Structure:');</p>
+        <p>    console.log(structure);</p>
+        <p>&#125;);</p>
+        <p>&lt;/script&gt;</p>
+        <p>&nbsp;</p>
+        <p>C:\SKILLS&gt; ────────────────────────────────────────────────────────────</p>
+        <p>C:\SKILLS&gt; Ready.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASKBAR -->
+  <div class="taskbar">
+    <button class="start-button" id="start-btn" onclick="toggleStartMenu(event)">
+      <div class="win-logo">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      Start
+    </button>
+    <div class="taskbar-divider"></div>
+    <div class="taskbar-buttons" id="taskbar-buttons">
+      <!-- dynamically populated -->
+    </div>
+    <div class="taskbar-tray">
+      <span id="clock">12:00</span>
+    </div>
+  </div>
+
+  <!-- START MENU -->
+  <div class="start-menu" id="start-menu">
+    <div class="start-menu-sidebar">
+      <span><em>Dodd</em> 95</span>
+    </div>
+    <div class="start-menu-items">
+      <div class="start-menu-item" onclick="openWindow('terminal-window'); document.getElementById('start-menu').style.display='none';" style="cursor:default;">
+        <svg class="start-menu-item-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="14" height="14" fill="#000000" stroke="#808080"/>
+          <text x="3" y="11" font-family="monospace" font-size="8" fill="#00ff00">&gt;_</text>
+        </svg>
+        SKILL.EXE
+      </div>
+      <div class="start-menu-separator"></div>
+      <a href="mailto:harrydodd.design@gmail.com" class="start-menu-link">
+        <svg class="start-menu-item-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="3" width="14" height="10" fill="#ffffff" stroke="#808080"/>
+          <polyline points="1,3 8,10 15,3" fill="none" stroke="#808080"/>
+        </svg>
+        Email Me
+      </a>
+      <a href="https://www.linkedin.com/in/harry-dodd-irwin-4aa789178/" target="_blank" class="start-menu-link">
+        <svg class="start-menu-item-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="14" height="14" rx="2" fill="#0077b5"/>
+          <rect x="3" y="6" width="2" height="7" fill="#ffffff"/>
+          <circle cx="4" cy="4" r="1.2" fill="#ffffff"/>
+          <path d="M7 6h2v1.5c.4-.8 1.2-1.5 2.2-1.5C12.8 6 13 7.2 13 8.5V13h-2V9c0-.8-.2-1.5-1-1.5S9 8.2 9 9v4H7V6z" fill="#ffffff"/>
+        </svg>
+        Follow on LinkedIn
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // STATE
+    // ============================================
+    const windowState = {
+      'folder-window':   { minimized: false, maximized: false, prevStyle: null, displayValue: 'block' },
+      'terminal-window': { minimized: false, maximized: false, prevStyle: null, displayValue: 'flex'  },
+    };
+
+    const windowTitles = {
+      'folder-window':   'Claude Skills',
+      'terminal-window': 'Terminal',
+    };
+
+    let zCounter = 100;
+    let activeWindowId = 'terminal-window';
+
+    // ============================================
+    // WINDOW MANAGEMENT
+    // ============================================
+    function openWindow(id) {
+      const win = document.getElementById(id);
+      const wasHidden = win.style.display === 'none' || win.style.display === '';
+      win.style.display = windowState[id].displayValue;
+      windowState[id].minimized = false;
+      focusWindow(id);
+      addTaskbarButton(id);
+      if (wasHidden) {
+        gsap.fromTo(win,
+          { opacity: 0, scale: 0.88, y: 16 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.38, ease: 'back.out(1.4)' }
+        );
+      }
+    }
+
+    function closeWindow(id) {
+      const win = document.getElementById(id);
+      win.style.display = 'none';
+      windowState[id].minimized = false;
+      windowState[id].maximized = false;
+      removeTaskbarButton(id);
+    }
+
+    function minimizeWindow(id) {
+      const win = document.getElementById(id);
+      win.style.display = 'none';
+      windowState[id].minimized = true;
+      updateTaskbarButtonState(id, false);
+    }
+
+    function maximizeWindow(id) {
+      const win = document.getElementById(id);
+      const state = windowState[id];
+      if (!state.maximized) {
+        state.prevStyle = {
+          top:    win.style.top,
+          left:   win.style.left,
+          width:  win.style.width,
+          height: win.style.height,
+        };
+        win.style.top    = '0px';
+        win.style.left   = '0px';
+        win.style.width  = '100vw';
+        win.style.height = 'calc(100vh - 28px)';
+        state.maximized = true;
+      } else {
+        if (state.prevStyle) {
+          win.style.top    = state.prevStyle.top;
+          win.style.left   = state.prevStyle.left;
+          win.style.width  = state.prevStyle.width;
+          win.style.height = state.prevStyle.height;
+        }
+        state.maximized = false;
+      }
+    }
+
+    function focusWindow(id) {
+      document.querySelectorAll('.window').forEach(w => {
+        w.classList.remove('active');
+        w.classList.add('inactive');
+      });
+      const win = document.getElementById(id);
+      win.classList.remove('inactive');
+      win.classList.add('active');
+      win.style.zIndex = ++zCounter;
+      activeWindowId = id;
+      updateAllTaskbarButtons();
+    }
+
+    // ============================================
+    // TASKBAR BUTTONS
+    // ============================================
+    function addTaskbarButton(id) {
+      if (document.getElementById('tb-' + id)) return;
+      const btn = document.createElement('button');
+      btn.id = 'tb-' + id;
+      btn.className = 'taskbar-window-btn';
+      btn.textContent = windowTitles[id] || id;
+      btn.onclick = () => {
+        if (windowState[id].minimized) {
+          openWindow(id);
+        } else if (activeWindowId === id) {
+          minimizeWindow(id);
+        } else {
+          const win = document.getElementById(id);
+          win.style.display = windowState[id].displayValue;
+          focusWindow(id);
+        }
+      };
+      document.getElementById('taskbar-buttons').appendChild(btn);
+    }
+
+    function removeTaskbarButton(id) {
+      const btn = document.getElementById('tb-' + id);
+      if (btn) btn.remove();
+    }
+
+    function updateAllTaskbarButtons() {
+      document.querySelectorAll('.taskbar-window-btn').forEach(btn => {
+        const id = btn.id.replace('tb-', '');
+        btn.classList.toggle('active', id === activeWindowId && !windowState[id].minimized);
+      });
+    }
+
+    function updateTaskbarButtonState(id, isActive) {
+      const btn = document.getElementById('tb-' + id);
+      if (btn) btn.classList.toggle('active', isActive);
+    }
+
+    // ============================================
+    // DRAGGING
+    // ============================================
+    function makeDraggable(win) {
+      const titleBar = win.querySelector('.title-bar');
+      let isDragging = false;
+      let startX, startY, startLeft, startTop;
+
+      function startDrag(clientX, clientY) {
+        isDragging = true;
+        startX    = clientX;
+        startY    = clientY;
+        startLeft = parseInt(win.style.left)  || win.offsetLeft;
+        startTop  = parseInt(win.style.top)   || win.offsetTop;
+        focusWindow(win.id);
+      }
+
+      function moveDrag(clientX, clientY) {
+        if (!isDragging) return;
+        const newLeft = Math.max(0, Math.min(startLeft + clientX - startX, window.innerWidth  - win.offsetWidth));
+        const newTop  = Math.max(0, Math.min(startTop  + clientY - startY, window.innerHeight - win.offsetHeight - 28));
+        win.style.left = newLeft + 'px';
+        win.style.top  = newTop  + 'px';
+      }
+
+      titleBar.addEventListener('mousedown', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+        startDrag(e.clientX, e.clientY);
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      });
+
+      titleBar.addEventListener('touchstart', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+        const t = e.touches[0];
+        startDrag(t.clientX, t.clientY);
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onTouchEnd);
+      }, { passive: true });
+
+      function onMouseMove(e) { moveDrag(e.clientX, e.clientY); }
+      function onMouseUp()    { isDragging = false; document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp); }
+      function onTouchMove(e) { e.preventDefault(); moveDrag(e.touches[0].clientX, e.touches[0].clientY); }
+      function onTouchEnd()   { isDragging = false; document.removeEventListener('touchmove', onTouchMove); document.removeEventListener('touchend', onTouchEnd); }
+    }
+
+    // ============================================
+    // DESKTOP ICON DOUBLE-CLICK
+    // ============================================
+    function setupIconDoubleClick(iconEl, windowId) {
+      let clickCount = 0;
+      let clickTimer;
+      let lastTap = 0;
+
+      iconEl.addEventListener('click', (e) => {
+        document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+        iconEl.classList.add('selected');
+        clickCount++;
+        clearTimeout(clickTimer);
+        if (clickCount >= 2) {
+          clickCount = 0;
+          openWindow(windowId);
+        } else {
+          clickTimer = setTimeout(() => { clickCount = 0; }, 400);
+        }
+      });
+
+      // Double-tap for mobile
+      iconEl.addEventListener('touchend', () => {
+        const now = Date.now();
+        if (now - lastTap < 400) openWindow(windowId);
+        lastTap = now;
+      }, { passive: true });
+    }
+
+    // ============================================
+    // FILE DOWNLOAD
+    // ============================================
+    function downloadSkillFile() {
+      const a = document.createElement('a');
+      a.href = 'webflow-gsap-skill.skill';
+      a.download = 'webflow-gsap-skill.skill';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // ============================================
+    // CLOCK
+    // ============================================
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2, '0');
+      const m = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById('clock').textContent = h + ':' + m;
+    }
+
+    // ============================================
+    // START MENU
+    // ============================================
+    function toggleStartMenu(e) {
+      e.stopPropagation();
+      const menu = document.getElementById('start-menu');
+      menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Make all windows draggable
+      document.querySelectorAll('.window').forEach(makeDraggable);
+
+      // Desktop icon → folder window
+      setupIconDoubleClick(document.getElementById('icon-claude-skills'), 'folder-window');
+
+      // File icon → download
+      const skillFile = document.getElementById('skill-file');
+      let fileClickCount = 0;
+      let fileClickTimer;
+      skillFile.addEventListener('click', () => {
+        document.querySelectorAll('.file-icon').forEach(f => f.classList.remove('selected'));
+        skillFile.classList.add('selected');
+        fileClickCount++;
+        clearTimeout(fileClickTimer);
+        if (fileClickCount >= 2) {
+          fileClickCount = 0;
+          downloadSkillFile();
+        } else {
+          fileClickTimer = setTimeout(() => { fileClickCount = 0; }, 400);
+        }
+      });
+
+      // Prevent textarea from triggering drag (guard in case removed)
+      const termInput = document.getElementById('terminal-input');
+      if (termInput) termInput.addEventListener('mousedown', e => e.stopPropagation());
+
+      // Focus window on click
+      document.querySelectorAll('.window').forEach(win => {
+        win.addEventListener('mousedown', () => focusWindow(win.id));
+      });
+
+      // Deselect icons when clicking desktop
+      document.getElementById('desktop').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('desktop')) {
+          document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+        }
+      });
+
+      // Close start menu on outside click
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#start-menu') && !e.target.closest('#start-btn')) {
+          document.getElementById('start-menu').style.display = 'none';
+        }
+      });
+
+      // Clock
+      updateClock();
+      setInterval(updateClock, 10000);
+
+      // ============================================
+      // BOOT SEQUENCE — GSAP pixel dissolve
+      // ============================================
+      const overlay   = document.getElementById('boot-overlay');
+      const CELL      = 10; // px per pixel cell
+      const cols      = Math.ceil(window.innerWidth  / CELL);
+      const rows      = Math.ceil(window.innerHeight / CELL);
+      const cellCount = cols * rows;
+
+      overlay.style.gridTemplateColumns = `repeat(${cols}, ${CELL}px)`;
+
+      const cells = [];
+      for (let i = 0; i < cellCount; i++) {
+        const px = document.createElement('div');
+        px.className = 'px';
+        px.style.width  = CELL + 'px';
+        px.style.height = CELL + 'px';
+        overlay.appendChild(px);
+        cells.push(px);
+      }
+
+      const tl = gsap.timeline();
+
+      // 1. Pixel dissolve reveal (random stagger, 0.06s each cell)
+      tl.to(cells, {
+        opacity: 0,
+        duration: 0.06,
+        stagger: { amount: 0.9, from: 'random' },
+        ease: 'none',
+        onComplete: () => { overlay.style.display = 'none'; }
+      })
+
+      // 2. Taskbar slides up
+      .from('.taskbar', {
+        y: 40, opacity: 0,
+        duration: 0.5, ease: 'power3.out'
+      }, '-=0.1')
+
+      // 3. Folder icon pops in
+      .from('#icon-claude-skills', {
+        opacity: 0, scale: 0.4, y: -10,
+        duration: 0.45, ease: 'back.out(2.2)'
+      }, '+=0.05')
+
+      // 4. Terminal window appears last
+      .add(() => {
+        const termWin = document.getElementById('terminal-window');
+        termWin.style.display = 'flex';
+        addTaskbarButton('terminal-window');
+        focusWindow('terminal-window');
+        gsap.fromTo(termWin,
+          { opacity: 0, scale: 0.82, y: 24 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.55, ease: 'power3.out' }
+        );
+      }, '+=0.1');
+    });
+  </script>
+</body>
+</html>
