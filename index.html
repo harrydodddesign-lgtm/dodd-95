@@ -784,6 +784,7 @@
       z-index: 99999;
       pointer-events: none;
       display: grid;
+      background: #000000;
     }
 
     #boot-overlay .px {
@@ -1174,16 +1175,16 @@
     }
 
     function fetchCounter() {
-      fetch(`https://api.countapi.xyz/get/${COUNTER_NS}/${COUNTER_KEY}`)
+      fetch(`https://api.counterapi.dev/v1/${COUNTER_NS}/${COUNTER_KEY}`)
         .then(r => r.json())
-        .then(d => setCounterDisplay(d.value ?? 0))
+        .then(d => setCounterDisplay(d.count ?? 0))
         .catch(() => setCounterDisplay(null));
     }
 
     function incrementCounter() {
-      fetch(`https://api.countapi.xyz/hit/${COUNTER_NS}/${COUNTER_KEY}`)
+      fetch(`https://api.counterapi.dev/v1/${COUNTER_NS}/${COUNTER_KEY}/up`)
         .then(r => r.json())
-        .then(d => setCounterDisplay(d.value ?? 0))
+        .then(d => setCounterDisplay(d.count ?? 0))
         .catch(() => {});
     }
 
