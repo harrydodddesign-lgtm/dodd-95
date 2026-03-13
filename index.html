@@ -680,6 +680,16 @@
         top: 36px !important;
       }
 
+      #projects-window {
+        width: calc(100vw - 12px) !important;
+        left: 6px !important;
+        top: 36px !important;
+      }
+
+      .projects-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+
       .window {
         min-width: unset;
       }
@@ -776,6 +786,84 @@
     }
 
     /* ============================================
+       PROJECTS WINDOW
+    ============================================ */
+    #projects-window {
+      width: 680px;
+      top: 80px;
+      left: 140px;
+    }
+
+    .projects-grid {
+      background: #ffffff;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #dfdfdf;
+      border-bottom: 2px solid #dfdfdf;
+      margin: 4px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      max-height: 420px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #808080 #c0c0c0;
+    }
+
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: default;
+      text-decoration: none;
+      color: inherit;
+      padding: 4px;
+    }
+
+    .project-card:hover .project-name {
+      background: #000080;
+      color: #ffffff;
+      outline: 1px dotted #ffffff;
+    }
+
+    .project-thumb {
+      width: 100%;
+      height: 88px;
+      object-fit: cover;
+      display: block;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #dfdfdf;
+      border-bottom: 2px solid #dfdfdf;
+    }
+
+    .project-thumb-placeholder {
+      width: 100%;
+      height: 88px;
+      background: #c0c0c0;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #dfdfdf;
+      border-bottom: 2px solid #dfdfdf;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: bold;
+      color: #808080;
+    }
+
+    .project-name {
+      font-size: 11px;
+      color: #000000;
+      text-align: center;
+      padding: 3px 4px 2px;
+      line-height: 1.3;
+      width: 100%;
+    }
+
+    /* ============================================
        BOOT OVERLAY — controlled by GSAP
     ============================================ */
     #boot-overlay {
@@ -805,6 +893,12 @@
     <div class="desktop-icon" id="icon-claude-skills" style="top: 20px; left: 20px;" tabindex="0">
       <div class="folder-icon icon-img"></div>
       <span class="icon-label">Claude Skills</span>
+    </div>
+
+    <!-- Desktop Icon: Client Projects folder -->
+    <div class="desktop-icon" id="icon-projects" style="top: 110px; left: 20px;" tabindex="0">
+      <div class="folder-icon icon-img"></div>
+      <span class="icon-label">Client Projects</span>
     </div>
 
     <!-- Download Counter Widget -->
@@ -889,6 +983,103 @@
     </div>
     <div class="status-bar">
       <span class="status-panel" id="email-status">Ready</span>
+    </div>
+  </div>
+
+  <!-- WINDOW: Client Projects -->
+  <div class="window" id="projects-window">
+    <div class="title-bar" id="projects-window-titlebar">
+      <span class="title-bar-text">
+        <span class="title-bar-folder"></span>
+        Client Projects
+      </span>
+      <div class="title-bar-controls">
+        <button onclick="minimizeWindow('projects-window')">_</button>
+        <button onclick="maximizeWindow('projects-window')">&#9744;</button>
+        <button onclick="closeWindow('projects-window')">&#x2715;</button>
+      </div>
+    </div>
+    <div class="menu-bar">
+      <span class="menu-item">File</span>
+      <span class="menu-item">Edit</span>
+      <span class="menu-item">View</span>
+      <span class="menu-item">Help</span>
+    </div>
+    <div class="projects-grid">
+
+      <a class="project-card" href="https://www.cascade.gg/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/696bacfec71f35153c8d35f1/696bd56a23d782ae6f87c542_hero-ski-pic.png" alt="Cascade" loading="lazy">
+        <span class="project-name">Cascade</span>
+      </a>
+
+      <a class="project-card" href="https://mavrix.game/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/68bef721a3f51976475604ce/68cfafa4161115b07934966e_30.avif" alt="Mavrix" loading="lazy">
+        <span class="project-name">Mavrix</span>
+      </a>
+
+      <a class="project-card" href="https://www.themerrittocracy.com/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/68c8fbbda05da734d817ddac/68d6cb802125d7633bbec48b_groupshot.webp" alt="The Merrittocracy" loading="lazy">
+        <span class="project-name">The Merrittocracy</span>
+      </a>
+
+      <a class="project-card" href="https://www.nomic.bio/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/6809f1b21b69c04ef8c7f2bc/690e573f8352b08ce82859ea_header.png" alt="Nomic Bio" loading="lazy">
+        <span class="project-name">Nomic Bio</span>
+      </a>
+
+      <a class="project-card" href="https://www.quantum-art.tech/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/67cd70e6e31d556490fcd21c/67ec17d8a142658c70d16b8c_Mission%20section-bg-image%201-min.png" alt="Quantum Art" loading="lazy">
+        <span class="project-name">Quantum Art</span>
+      </a>
+
+      <a class="project-card" href="https://www.sonovein.com/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/67f65b569b61e84e66af70fc/67f780f16f83edf3188f3e7a_Hoome%20header%20high%20res.avif" alt="Sonovein" loading="lazy">
+        <span class="project-name">Sonovein</span>
+      </a>
+
+      <a class="project-card" href="https://www.pepperhq.com/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/65cf6a719b0b54df399c0fba/666196434008bdc470ec6dbf_0e8a57a7d0c88d6a3397106bab57cc76_Pepper%20OS%20nav.webp" alt="Pepper HQ" loading="lazy">
+        <span class="project-name">Pepper HQ</span>
+      </a>
+
+      <a class="project-card" href="https://www.spentys.com/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/66a3b36deca8afdcb7365335/66de953b2757f397260fcb51_SMO-workflow-Spentys.avif" alt="Spentys" loading="lazy">
+        <span class="project-name">Spentys</span>
+      </a>
+
+      <a class="project-card" href="https://www.trappenruiz.be/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/65e7436ec7d643b191fd620e/670be420ecfc651478711880_TrappenRuiz42.avif" alt="Trappen Ruiz" loading="lazy">
+        <span class="project-name">Trappen Ruiz</span>
+      </a>
+
+      <a class="project-card" href="https://www.saltbox.com/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/667d148040fe70ed2317d980/67502f3c336c9bd218fbe8c1_66b004df634b9de1244dd53b_LAD%206.avif" alt="Saltbox" loading="lazy">
+        <span class="project-name">Saltbox</span>
+      </a>
+
+      <a class="project-card" href="https://www.breedbio.com/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/6628601ef4435e106735e209/69adb02bcdc09ce8b857fe4c_BB-main-4-2.webp" alt="Breed Bio" loading="lazy">
+        <span class="project-name">Breed Bio</span>
+      </a>
+
+      <a class="project-card" href="https://www.getparsel.com/" target="_blank" rel="noopener">
+        <div class="project-thumb-placeholder">P</div>
+        <span class="project-name">Parsel</span>
+      </a>
+
+      <a class="project-card" href="https://www.nisho.be/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/65ce603cec8f493661f58bdf/66abccbe8134d46b1f1ddeb7_Rectangle%20647.avif" alt="Nisho" loading="lazy">
+        <span class="project-name">Nisho</span>
+      </a>
+
+      <a class="project-card" href="https://www.truerace.com/" target="_blank" rel="noopener">
+        <img class="project-thumb" src="https://cdn.prod.website-files.com/6748817d5f5d642d97bf144e/67c464550ed1a101e2e01669_TrueRace-logo-primary%201.png" alt="TrueRace" loading="lazy">
+        <span class="project-name">TrueRace</span>
+      </a>
+
+    </div>
+    <div class="status-bar">
+      <span class="status-panel">14 object(s)</span>
     </div>
   </div>
 
@@ -1010,12 +1201,14 @@
       'folder-window':   { minimized: false, maximized: false, prevStyle: null, displayValue: 'block' },
       'terminal-window': { minimized: false, maximized: false, prevStyle: null, displayValue: 'flex'  },
       'email-window':    { minimized: false, maximized: false, prevStyle: null, displayValue: 'block' },
+      'projects-window': { minimized: false, maximized: false, prevStyle: null, displayValue: 'block' },
     };
 
     const windowTitles = {
       'folder-window':   'Claude Skills',
       'terminal-window': 'Terminal',
       'email-window':    'New Message',
+      'projects-window': 'Client Projects',
     };
 
     let zCounter = 100;
@@ -1342,6 +1535,12 @@
       // Desktop icon → folder window
       setupIconDoubleClick(document.getElementById('icon-claude-skills'), 'folder-window');
 
+      // Desktop icon → projects window
+      setupIconDoubleClick(document.getElementById('icon-projects'), 'projects-window');
+
+      // Focus window on click (include projects window)
+      document.getElementById('projects-window').addEventListener('mousedown', () => focusWindow('projects-window'));
+
       // File icon → download
       const skillFile = document.getElementById('skill-file');
       let fileClickCount = 0;
@@ -1432,6 +1631,12 @@
         opacity: 0, scale: 0.4, y: -10,
         duration: 0.45, ease: 'back.out(2.2)'
       }, '+=0.05')
+
+      // 3a. Projects icon pops in
+      .from('#icon-projects', {
+        opacity: 0, scale: 0.4, y: -10,
+        duration: 0.45, ease: 'back.out(2.2)'
+      }, '-=0.3')
 
       // 3b. Counter widget pops in
       .from('#download-counter', {
